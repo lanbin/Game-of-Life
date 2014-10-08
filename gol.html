@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Univers</title>
+    <script src="http://honey.hunantv.com/honey-2.0/lib/jquery.js?v20140730"></script>
+    <style>
+    b {
+        width: 8px;
+        height: 8px;
+        border: 1px solid #ccc;
+        display: inline-block;
+    }
+    .t {
+        background-color: #0000ee;
+    }
+    #box {
+        width: 1000px;
+        height: 750px;
+    }
+    button {
+        position: absolute;
+        right: 100px;
+    }
+    #stop {
+        bottom: 50px;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+    </div>
+    <button id="go">Go</button>
+    <button id="stop">Stop</button>
+</body>
+<script>
+var num = 100 * 75,
+    initNum = num / 3,
+    initedNum = 0
+$(function() {
+    var html = [],
+        list = [],
+        slist = []
+    for (var index = 0; index < num; index++) {
+        if ((Math.random() * 10 <= 2.346) && initedNum < initNum) {
+            html.push("<b class='t'></b>")
+            ++initedNum
+        } else {
+            html.push("<b></b>")
+        }
+    }
+
+    $("#box").html(html.join(""))
+    $("#box b").each(function(index, item) {
+        var i = ((index + 1) % 100)
+        if (!list[i]) {
+            list[i] = []
+        }
+        list[i].push(item)
+        if (!slist[i]) {
+            slist[i] = []
+        }
+        slist[i].push(false)
+    })
+    var x = y = 0,
+        t1 = t2 = t3 = t4 = t5 = t6 = t7 = t8 = null,
+        tnum = 0,
+        cid = null
+
+    $("#go").on("click", function() {
+        go()
+    })
+
+    $("#stop").on("click", function() {
+        clearInterval(cid)
+    })
+
+    function go() {
+        cid = setInterval(function() {
+            for (var xi = 0; xi < 100; xi++) {
+                for (var yi = 0; yi < 75; yi++) {
+                    if (xi - 1 >= 0) {
+                        t1 = list[xi - 1][yi]
+                    }
+                    if (xi + 1 <= 99) {
+                        t2 = list[xi + 1][yi]
+                    }
+                    if (yi - 1 >= 0) {
+                        t3 = list[xi][yi - 1]
+                    }
+                    if (yi + 1 <= 74) {
+                        t4 = list[xi][yi + 1]
+                    }
+                    if (yi + 1 <= 74 && xi + 1 <= 99) {
+                        t5 = list[xi + 1][yi + 1]
+                    }
+                    if (yi - 1 >= 0 && xi - 1 >= 0) {
+                        t6 = list[xi - 1][yi - 1]
+                    }
+                    if (yi + 1 <= 74 && xi - 1 >= 0) {
+                        t7 = list[xi - 1][yi + 1]
+                    }
+                    if (yi - 1 >= 0 && xi + 1 <= 99) {
+                        t8 = list[xi + 1][yi - 1]
+                    }
+
+                    if (t1 && $(t1).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t2 && $(t2).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t3 && $(t3).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t4 && $(t4).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t5 && $(t5).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t6 && $(t6).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t7 && $(t7).hasClass("t")) {
+                        ++tnum
+                    }
+                    if (t8 && $(t8).hasClass("t")) {
+                        ++tnum
+                    }
+
+                    var s = $(list[xi][yi]).hasClass("t"),
+                        ts = false
+
+                    //记录状态 最后赋值
+                    // if (tnum >= 3 && !s) {
+                    //     ts = true
+                    // } else if (tnum < 2 && s) {
+                    //     ts = false
+                    // } else if (s && (tnum == 2 || tnum == 3)) {
+                    //     ts = s
+                    // } else if (s && tnum > 3) {
+                    //     ts = false
+                    // }
+
+                    if(tnum == 3) {
+                    	ts = true
+                    }else if(tnum == 2){
+                    	ts = s
+                    }else {
+                    	ts = false
+                    }
+
+                    slist[xi][yi] = ts
+
+                    t1 = t2 = t3 = t4 = t5 = t6 = t7 = t8 = null
+                    tnum = 0
+                }
+            }
+
+            for (var xis = 0; xis < 100; xis++) {
+                for (var yis = 0; yis < 75; yis++) {
+                    if (slist[xis][yis]) {
+                        $(list[xis][yis]).addClass("t")
+                    } else {
+                        $(list[xis][yis]).removeClass("t")
+                    }
+                }
+            }
+
+        }, 100)
+    }
+})
+</script>
+
+</html>
